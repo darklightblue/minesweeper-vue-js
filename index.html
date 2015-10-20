@@ -1,0 +1,61 @@
+<!Doctype>
+<html>
+<head>
+<style type="text/css">
+    body {
+    font-family: Helvetica Neue, Arial, sans-serif;
+}
+#demo{
+    width: 100%;
+    height:700px;
+    text-align: center;
+}
+.box{
+    border:1px solid #525252;
+    width:30px;
+    height: 30px;
+    display:inline-block;
+}
+.after{
+	clear: left;
+}
+
+.imgblock{
+    width:100%;
+    hieght:100%;
+}
+
+#minesweepercont{
+    margin-top: 30px;
+    height:600px;
+}
+
+</style>
+</head>
+<body>
+
+<div id="demo">
+<select v-model="levelSelect" v-on="change: changeLvl(levelSelect)" options="options">
+    <option value='8'>Select Level</option>
+</select>
+
+    <div id="minesweepercont">
+    <minesweeper>
+        <vertical v-repeat="level" class="box" id="f_{{vid = $index}}">
+            <horizontal v-repeat="horizontal" class="box" id="{{hid=$index+1}}" data-revealed="false">
+                <cell picture="shadow0.gif" vid="{{vid}}" hid="{{hid}}"  bomb="hasBomb" id="b_{{hid}}_{{vid}}" ></cell>
+            </horizontal>
+        </vertical>
+    </minesweeper>
+    </div>
+</div>
+
+<br/>
+<br/>
+<hr/>
+
+
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript" src="js/bundle.js"></script>
+</body>
+</html>
