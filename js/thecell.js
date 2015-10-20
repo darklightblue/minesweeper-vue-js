@@ -1,6 +1,8 @@
 module.exports = {
-	props: ['picture', 'idprop', 'bomb','vid', 'hid', 'id'],
-	template: "<img bomb='{{bomb}}' vid='{{vid}}' hid='{{hid}}' v-on='click: showBlock' idprop='{{id}}' id={{id}} class='imgblock' src='images/{{picture}}' />",
+  props: ['picture', 'idprop', 'bomb','vid', 'hid', 'id'],
+    template: "<img bomb='{{bomb}}' vid='{{vid}}' hid='{{hid}}'"+
+                " v-on='click: showBlock' idprop='{{id}}' id={{id}}"+
+                " class='imgblock' src='images/{{picture}}' />",
 	methods: {
 	   showBlock: function(){
             var theindex = this.id;
@@ -8,10 +10,14 @@ module.exports = {
         	var loadedAlready = this.$parent.loadedAlready;
         	var bombnum = this.$parent.bombnum;
             var ask = false;
+
             //if first time being loaded, then enter the if statement
             if(loadedAlready == false){
-            var all=document.querySelectorAll("img[idprop^='b_']:not([idprop='"+theindex+"'])");
-            document.querySelector("[idprop='"+theindex+"']").setAttribute("bomb", "noBomb");
+            var all=document
+            .querySelectorAll("img[idprop^='b_']:not([idprop='"+theindex+"'])");
+            document.querySelector("[idprop='"+theindex+"']")
+            .setAttribute("bomb", "noBomb");
+
             //assigning the bombs to a random cell
             var tempholder = [];
             for (i = 0; i < all.length; i++) {
@@ -35,7 +41,8 @@ module.exports = {
 
                 var hid = overall[a].getAttribute("hid");
                 var vid = overall[a].getAttribute("vid");
-                var cellcont = document.querySelector("[idprop='"+overall[a].id+"']");
+                var cellcont = document
+                .querySelector("[idprop='"+overall[a].id+"']");
                 var cellId = cellcont.id;
                 var blkCnt = cellcont.getAttribute("bomb");
                 var idnum = cellId.replace(/^\D+/g, "");

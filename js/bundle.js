@@ -52,10 +52,13 @@
 	        //picture: 'shadow0.gif',
 	        level: 8,
 	        levelSelect: 8,
+	        lvlSelect: 8,
+	        horizontalSelect: 8,
+	        bombSelect: 10,
 	        loadedAlready: false,
 	        bombnum: 10,
 	        horizontal: 8,
-	        options: [{ text: 'Beginner', value: 8, bomb: 10 }, { text: 'Intermediate', value: 16, bomb: 18 }, { text: 'Expert', value: 30, bomb: 35 }]
+	        options: [{ text: 'Beginner', value: 8, bomb: 10 }, { text: 'Intermediate', value: 16, bomb: 18 }, { text: 'Expert', value: 30, bomb: 35 }, { text: 'Custom', value: 9, bomb: 10 }]
 	    },
 
 	    directives: {
@@ -104,6 +107,13 @@
 	                var overall2 = vm.$el.querySelector("#" + overallId);
 	                overall2.setAttribute("data-revealed", "false");
 	            }
+	        },
+
+	        customValues: function customValues() {
+	            this.level = parseInt(this.lvlSelect);
+	            this.horizontal = parseInt(this.horizontalSelect);
+	            this.bombnum = parseInt(this.bombSelect);
+	            this.levelSelect = 8;
 	        }
 
 	    },
@@ -119,7 +129,7 @@
 
 	module.exports = {
 	    props: ['picture', 'idprop', 'bomb', 'vid', 'hid', 'id'],
-	    template: "<img bomb='{{bomb}}' vid='{{vid}}' hid='{{hid}}' v-on='click: showBlock' idprop='{{id}}' id={{id}} class='imgblock' src='images/{{picture}}' />",
+	    template: "<img bomb='{{bomb}}' vid='{{vid}}' hid='{{hid}}'" + " v-on='click: showBlock' idprop='{{id}}' id={{id}}" + " class='imgblock' src='images/{{picture}}' />",
 	    methods: {
 	        showBlock: function showBlock() {
 	            var theindex = this.id;
@@ -127,10 +137,12 @@
 	            var loadedAlready = this.$parent.loadedAlready;
 	            var bombnum = this.$parent.bombnum;
 	            var ask = false;
+
 	            //if first time being loaded, then enter the if statement
 	            if (loadedAlready == false) {
 	                var all = document.querySelectorAll("img[idprop^='b_']:not([idprop='" + theindex + "'])");
 	                document.querySelector("[idprop='" + theindex + "']").setAttribute("bomb", "noBomb");
+
 	                //assigning the bombs to a random cell
 	                var tempholder = [];
 	                for (i = 0; i < all.length; i++) {

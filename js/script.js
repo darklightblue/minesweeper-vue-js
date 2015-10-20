@@ -4,6 +4,9 @@ var vm = new Vue({
         //picture: 'shadow0.gif',
         level: 8,
         levelSelect: 8,
+        lvlSelect: 8,
+        horizontalSelect: 8,
+        bombSelect: 10,
         loadedAlready: false,
         bombnum: 10,
         horizontal: 8,
@@ -11,6 +14,7 @@ var vm = new Vue({
             {text: 'Beginner', value: 8, bomb: 10},
             {text: 'Intermediate', value: 16, bomb: 18},
             {text: 'Expert', value: 30, bomb: 35},
+            {text: 'Custom', value: 9, bomb: 10},
         ],
     },
 
@@ -67,6 +71,13 @@ var vm = new Vue({
                 overall2.setAttribute("data-revealed", "false");
             }
 
+        },
+
+        customValues: function(){
+            this.level = parseInt(this.lvlSelect);
+            this.horizontal = parseInt(this.horizontalSelect);
+            this.bombnum = parseInt(this.bombSelect);
+            this.levelSelect = 8;
         },
 
     },

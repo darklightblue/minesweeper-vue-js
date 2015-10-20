@@ -2,9 +2,17 @@
 <html>
 <head>
 <style type="text/css">
-    body {
+body {
     font-family: Helvetica Neue, Arial, sans-serif;
 }
+
+input, select, button{
+    width: 150px;
+    height: 40px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
 #demo{
     width: 100%;
     height:700px;
@@ -27,8 +35,26 @@
 
 #minesweepercont{
     margin-top: 30px;
+    position: relative;
+    top: 100px;
     height:600px;
 }
+
+#frm_container{
+    width: 300px;
+    margin:10px auto 0 auto;
+    display: block;
+}
+
+#frm_container input{
+    margin: 5px;
+}
+
+#infoboard{
+    width: 300px;
+    position:absolute;
+}
+
 
 </style>
 </head>
@@ -38,6 +64,20 @@
 <select v-model="levelSelect" v-on="change: changeLvl(levelSelect)" options="options">
     <option value='8'>Select Level</option>
 </select>
+<div id="infoboard">
+    <h3>Width: {{level}}</h3>
+    <h3>Height: {{horizontal}}</h3>
+    <h3>Bombs: {{bombnum}}</h3>
+</div>
+<div id="frm_container" v-if="levelSelect == 9">
+    <label for="lselect">Width: </label>
+    <input id="lselect" type="number" v-model="lvlSelect"/><br/>
+    <label for="hselect">Height: </label>
+    <input id="hselect" type="number" v-model="horizontalSelect"/><br/>
+    <label for="bselect">Bombs: </label>
+    <input id="bselect" type="number" v-model="bombSelect"/><br/>
+    <button v-on="click: customValues">OK</button>
+</div>
 
     <div id="minesweepercont">
     <minesweeper>
