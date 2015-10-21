@@ -44,6 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* globals Vue, require */
 	"use strict";
 	var vm = new Vue({
 	  el: "#demo",
@@ -57,7 +58,23 @@
 	    loadedAlready: false,
 	    bombnum: 10,
 	    horizontal: 8,
-	    options: [{ text: "Beginner", value: 8, bomb: 10 }, { text: "Intermediate", value: 16, bomb: 18 }, { text: "Expert", value: 30, bomb: 35 }, { text: "Custom", value: 9, bomb: 10 }]
+	    options: [{
+	      text: "Beginner",
+	      value: 8,
+	      bomb: 10
+	    }, {
+	      text: "Intermediate",
+	      value: 16,
+	      bomb: 18
+	    }, {
+	      text: "Expert",
+	      value: 30,
+	      bomb: 35
+	    }, {
+	      text: "Custom",
+	      value: 9,
+	      bomb: 10
+	    }]
 	  },
 
 	  directives: {
@@ -75,9 +92,10 @@
 
 	    changeLvl: function changeLvl(lvlval) {
 	      /*  changes the height and width of the board (dropdown)
-	        level - width
-	        horizontal - height
+	      level - width
+	      horizontal - height
 	      */
+	      var overall = vm.$el.querySelectorAll("img[id^='b_']");
 	      this.loadedAlready = false;
 	      if (lvlval == "8") {
 	        this.level = 8;
@@ -95,15 +113,14 @@
 	        this.bombnum = 99;
 	        this.level = 30;
 	      }
-	      var overall = vm.$el.querySelectorAll("img[id^='b_']");
 	      //sets the default attributes and images on every
 	      //change of dropdown value
 	      for (var i = 0; i <= overall.length - 1; i++) {
 	        vm.$el.querySelector("[idprop='" + overall[i].id + "']").parentElement.style.pointerEvents = "auto";
 	        var overallId = overall[i].id;
-	        var overallChild = vm.$el.querySelector("#" + overallId);
-	        overallChild.setAttribute("src", "images/shadow0.gif");
 	        var overall2 = vm.$el.querySelector("#" + overallId);
+
+	        overall2.setAttribute("src", "images/shadow0.gif");
 	        overall2.setAttribute("data-revealed", "false");
 	      }
 	    },
@@ -124,30 +141,34 @@
 /* 1 */
 /***/ function(module, exports) {
 
+	/* globals module */
+
 	"use strict";
 
 	module.exports = {
 	  props: ["picture", "idprop", "bomb", "vid", "hid", "id"],
 	  template: "<img bomb='{{bomb}}' vid='{{vid}}' hid='{{hid}}'" + " v-on='click: showBlock' idprop='{{id}}' id={{id}}" + " class='imgblock' src='images/{{picture}}' />",
 	  methods: {
+
 	    showBlock: function showBlock() {
 	      var theindex = this.id;
-	      var gameover = false;
-	      var loadedAlready = this.$parent.loadedAlready;
 	      var bombnum = this.$parent.bombnum;
-	      var ask = false;
-	      var hid;
-	      var vid;
 	      var overall = document.querySelectorAll("img[idprop^='b_']");
+	      var gameover = false;
+	      var endGame = false;
+	      var loadedAlready = this.$parent.loadedAlready;
+	      var ask = false;
+	      var hid = undefined;
+	      var vid = undefined;
 
 	      //if first time being loaded, then enter the if statement
 	      if (loadedAlready === false) {
+	        var tempholder = [];
 	        var all = document.querySelectorAll("img[idprop^='b_']:not([idprop='" + theindex + "'])");
 	        document.querySelector("[idprop='" + theindex + "']").setAttribute("bomb", "noBomb");
 
 	        //assigning the bombs to a random cell
-	        var tempholder = [];
-	        for (i = 0; i < all.length; i++) {
+	        for (var i = 0; i < all.length; i++) {
 	          tempholder.push(all[i]);
 	        }
 	        for (var s = 0; s < all.length - bombnum; s++) {
@@ -161,23 +182,19 @@
 	        for (var d = 0; d < tempholder.length; d++) {
 	          tempholder[d].setAttribute("bomb", "hasBomb");
 	        }
-	        //------------------------------------------------------------------------------
+	        //----------------------------------------------------------------------
 	        // Setting the value of cells based on the number of bombs around it.
 	        for (var a = 0; a < overall.length; a++) {
 
 	          hid = overall[a].getAttribute("hid");
 	          vid = overall[a].getAttribute("vid");
 	          var cellcont = document.querySelector("[idprop='" + overall[a].id + "']");
-	          var cellId = cellcont.id;
 	          var blkCnt = cellcont.getAttribute("bomb");
-	          var idnum = cellId.replace(/^\D+/g, "");
-	          var bomNum = 0;
 	          var upVal = parseInt(hid) - 1;
 	          var downVal = parseInt(hid) + 1;
 	          var leftVal = parseInt(vid) - 1;
 	          var rightVal = parseInt(vid) + 1;
-
-	          idnum = parseInt(idnum);
+	          var bomNum = 0;
 
 	          //--
 
@@ -185,46 +202,14 @@
 	            cellcont.setAttribute("bomb", "hasBomb");
 	          } else {
 	            //----
-	            if (this.getCell(downVal, vid) === false) {
-	              if (this.getVbombVal("b_" + downVal + "_" + vid) === "hasBomb") {
-	                bomNum = bomNum + 1;
-	              }
-	            }
-	            if (this.getCell(upVal, vid) === false) {
-	              if (this.getVbombVal("b_" + upVal + "_" + vid) === "hasBomb") {
-	                bomNum = bomNum + 1;
-	              }
-	            }
-	            if (this.getCell(hid, rightVal) === false) {
-	              if (this.getVbombVal("b_" + hid + "_" + rightVal) === "hasBomb") {
-	                bomNum = bomNum + 1;
-	              }
-	            }
-	            if (this.getCell(hid, leftVal) === false) {
-	              if (this.getVbombVal("b_" + hid + "_" + leftVal) === "hasBomb") {
-	                bomNum = bomNum + 1;
-	              }
-	            }
-	            if (this.getCell(upVal, leftVal) === false) {
-	              if (this.getVbombVal("b_" + upVal + "_" + leftVal) === "hasBomb") {
-	                bomNum = bomNum + 1;
-	              }
-	            }
-	            if (this.getCell(upVal, rightVal) === false) {
-	              if (this.getVbombVal("b_" + upVal + "_" + rightVal) === "hasBomb") {
-	                bomNum = bomNum + 1;
-	              }
-	            }
-	            if (this.getCell(downVal, leftVal) === false) {
-	              if (this.getVbombVal("b_" + downVal + "_" + leftVal) === "hasBomb") {
-	                bomNum = bomNum + 1;
-	              }
-	            }
-	            if (this.getCell(downVal, rightVal) === false) {
-	              if (this.getVbombVal("b_" + downVal + "_" + rightVal) === "hasBomb") {
-	                bomNum = bomNum + 1;
-	              }
-	            }
+	            bomNum = this.getBombNum(downVal, vid, bomNum);
+	            bomNum = this.getBombNum(upVal, vid, bomNum);
+	            bomNum = this.getBombNum(hid, rightVal, bomNum);
+	            bomNum = this.getBombNum(hid, leftVal, bomNum);
+	            bomNum = this.getBombNum(upVal, leftVal, bomNum);
+	            bomNum = this.getBombNum(upVal, rightVal, bomNum);
+	            bomNum = this.getBombNum(downVal, leftVal, bomNum);
+	            bomNum = this.getBombNum(downVal, rightVal, bomNum);
 
 	            if (bomNum === 0) {
 	              cellcont.setAttribute("bomb", "noBomb");
@@ -235,7 +220,7 @@
 	          }
 	        }
 
-	        //------------------------------------------------------------------------------
+	        //----------------------------------------------------------------------
 	        loadedAlready = true;
 	        this.$parent.loadedAlready = true;
 	      } else {}
@@ -251,8 +236,8 @@
 
 	        gameover = true;
 	        for (var i = 0; i <= elems.length; i++) {
-	          var setAtt,
-	              loopErr = false;
+	          var setAtt = undefined;
+	          var loopErr = false;
 	          try {
 	            setAtt = document.querySelector("[idprop='" + elems[i].id + "']");
 	          } catch (err) {
@@ -266,14 +251,13 @@
 
 	            document.querySelector("[idprop='" + currId + "']").parentElement.style.pointerEvents = "none";
 	          }
+	          document.querySelector("[idprop='" + theindex + "']").setAttribute("src", "images/bombdeath.gif");
 	        }
 	      }
 
 	      if (gameover) {
+	        endGame = true;
 	        ask = window.confirm("Game Over!, New Game?");
-	        for (var k = 0; k < overall.length; k++) {
-	          document.querySelector("[idprop='" + overall[k].id + "']").parentElement.style.pointerEvents = "none";
-	        }
 	      }
 	      if (bombVer == "noBomb") {
 	        //if empty cell, then enter the function
@@ -289,19 +273,27 @@
 	      var bomblength = elems.length;
 	      var angbilin = document.querySelectorAll("horizontal[data-revealed=false]").length;
 	      if (bomblength == angbilin && gameover === false) {
+	        endGame = true;
 	        ask = window.confirm("Congratulations, You Win, New Game?");
 	      }
 
 	      if (ask) {
+	        endGame = false;
 	        this.$parent.changeLvl(this.level);
 	      } else {}
+
+	      if (endGame) {
+	        for (var k = 0; k < overall.length; k++) {
+	          document.querySelector("[idprop='" + overall[k].id + "']").parentElement.style.pointerEvents = "none";
+	        }
+	      }
 	    },
 
 	    //checks if the cell contains a bomb
 	    getVbombVal: function getVbombVal(idn) {
 	      var mayErr = false;
-	      var thecellcont;
-	      var vBombval;
+	      var thecellcont = undefined;
+	      var vBombval = undefined;
 	      try {
 	        thecellcont = document.querySelector("[idprop='" + idn + "']");
 	        vBombval = thecellcont.getAttribute("bomb");
@@ -323,6 +315,10 @@
 	      for (var i = 1; i <= 8; i++) {
 	        var dummyHid = parseInt(hid);
 	        var dummyVid = parseInt(vid);
+	        var myErr = false;
+	        var dEl = undefined;
+	        var val = undefined;
+
 	        if (i == 1) {
 	          dummyHid = parseInt(hid) + 1; //down
 	        } else if (i == 2) {
@@ -344,9 +340,6 @@
 	                      dummyVid = parseInt(vid) + 1;
 	                      dummyHid = parseInt(hid) - 1; //upright
 	                    }
-	        var myErr = false;
-	        var dEl;
-	        var val;
 
 	        if (bombVer == "noBomb") {
 	          el.setAttribute("src", "images/open0.gif");
@@ -360,13 +353,14 @@
 	          if (myErr === false) {
 	            dEl = document.querySelector("[idprop='b_" + dummyHid + "_" + dummyVid + "']");
 	            val = dEl.getAttribute("bomb");
+
 	            if (dEl.getAttribute("src") == "images/shadow0.gif") {
 	              var theval = val.replace(/^\D+/g, "");
 	              theval = parseInt(theval);
+
 	              if (val != "hasBomb") {
 	                dEl.setAttribute("src", "images/" + this.getpic(theval));
 	                dEl.parentElement.setAttribute("data-revealed", "true");
-	                //alert(val)
 	                if (val == "noBomb") {
 	                  this.getNeighbor(dummyHid, dummyVid);
 	                }
@@ -376,6 +370,7 @@
 	        }
 	      }
 	    },
+
 	    getpic: function getpic(val) {
 	      if (val == "0") {
 	        return "open0.gif";
@@ -402,8 +397,8 @@
 	    },
 
 	    getCell: function getCell(hidval, vidval) {
-	      var dummyTryId;
-	      var theErr;
+	      var dummyTryId = undefined;
+	      var theErr = undefined;
 	      try {
 	        dummyTryId = "b_" + hidval + "_" + vidval;
 	        this.getVbombVal(dummyTryId);
@@ -415,7 +410,18 @@
 	      } else {
 	        return false;
 	      }
+	    },
+
+	    getBombNum: function getBombNum(hidval, vidval, bombnums) {
+	      var bomNum = bombnums;
+	      if (this.getCell(hidval, vidval) === false) {
+	        if (this.getVbombVal("b_" + hidval + "_" + vidval) === "hasBomb") {
+	          bomNum = bomNum + 1;
+	        }
+	      }
+	      return bomNum;
 	    }
+
 	  }
 	};
 
